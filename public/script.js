@@ -19,6 +19,13 @@ const car2 = document.getElementById('car2');
 const wpm1 = document.getElementById('wpm1');
 const wpm2 = document.getElementById('wpm2');
 
+// 💡 Connection Help Modal Elements
+const connectionHelpBtn = document.querySelector('.tag-blue'); 
+const helpModal = document.getElementById('help-modal');
+const closeHelpBtn = document.getElementById('close-help-btn');
+const gotItBtn = document.getElementById('got-it-btn');
+const helpCreateBtn = document.getElementById('help-create-btn');
+
 // 📝 MOTIVATION & SUCCESS SENTENCES LIST (25+ Sentences)
 const sentencesList = [
     "Push yourself because no one else is going to do it for you.",
@@ -64,6 +71,42 @@ function setNewSentence() {
 }
 
 // ==========================================
+// 💡 CONNECTION HELP MODAL LOGIC
+// ==========================================
+
+if (connectionHelpBtn) {
+    connectionHelpBtn.style.cursor = 'pointer';
+    connectionHelpBtn.addEventListener('click', () => {
+        helpModal.style.display = 'flex';
+    });
+}
+
+if (closeHelpBtn) {
+    closeHelpBtn.addEventListener('click', () => {
+        helpModal.style.display = 'none';
+    });
+}
+
+if (gotItBtn) {
+    gotItBtn.addEventListener('click', () => {
+        helpModal.style.display = 'none';
+    });
+}
+
+if (helpCreateBtn) {
+    helpCreateBtn.addEventListener('click', () => {
+        helpModal.style.display = 'none';
+        createRoomBtn.click(); 
+    });
+}
+
+window.addEventListener('click', (e) => {
+    if (e.target === helpModal) {
+        helpModal.style.display = 'none';
+    }
+});
+
+// ==========================================
 // 🚀 1. LOBBY & ROOM LOGIC
 // ==========================================
 
@@ -107,7 +150,7 @@ socket.on('gameStarted', (roomCode) => {
     roomMenu.style.display = 'none';
     gameArea.style.display = 'block';
     
-    setNewSentence(); // Naya sentence set hoga
+    setNewSentence();
 
     playerStatus.innerText = "RACE STARTED! GO GO GO! 🔥";
     playerStatus.style.background = "transparent";
@@ -135,7 +178,7 @@ vsBotBtn.addEventListener('click', () => {
     roomMenu.style.display = 'none';
     gameArea.style.display = 'block';
     
-    setNewSentence(); // Naya sentence set hoga
+    setNewSentence();
 
     playerStatus.innerText = "VS BOT MODE - RACE STARTED! 🔥";
     playerStatus.style.background = "transparent";
@@ -287,7 +330,7 @@ socket.on('restartGame', () => {
     matchOver = false;
     startTime = new Date().getTime();
     
-    setNewSentence(); // Restart par bhi naya sentence aayega
+    setNewSentence();
 
     car1.style.left = '0%';
     car2.style.left = '0%';

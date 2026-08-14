@@ -194,6 +194,36 @@
         </div>
     </div>
 
+    <!-- 💡 CONNECTION HELP MODAL POPUP -->
+    <div id="help-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); z-index: 1000; justify-content: center; align-items: center;">
+        <div style="background: #0a0a0a; border: 2px solid #33e1ff; padding: 30px; border-radius: 20px; text-align: left; max-width: 550px; width: 90%; color: #fff; position: relative; box-shadow: 0 10px 30px rgba(0,0,0,0.5);">
+            
+            <!-- Close Button -->
+            <span id="close-help-btn" style="position: absolute; top: 15px; right: 20px; font-size: 24px; cursor: pointer; color: #888; font-weight: bold;">&times;</span>
+            
+            <h2 style="color: #33e1ff; font-family: 'Impact', sans-serif; font-size: 26px; margin-top: 0; letter-spacing: 1px;">CONNECTION HELP</h2>
+            
+            <div style="background: #141414; border: 1px solid #333; padding: 15px; border-radius: 10px; margin-bottom: 15px; font-size: 13px; line-height: 1.6;">
+                <p style="color: #FFE600; font-weight: bold; margin-top: 0;">HOW TO CONNECT TWO DEVICES:</p>
+                <ol style="padding-left: 20px; margin-bottom: 0; color: #ccc;">
+                    <li>On one device, click <b>Create Room</b>. A 4-digit code will appear.</li>
+                    <li>On the second device, click <b>Join Room</b> and enter that code.</li>
+                    <li>Both devices will connect instantly and start the live typing race!</li>
+                    <li>You can also copy the room code and share it with friends via chat.</li>
+                </ol>
+            </div>
+
+            <div style="background: #0d1b2a; border: 1px solid #33e1ff; padding: 12px 15px; border-radius: 10px; margin-bottom: 20px; font-size: 12px; color: #33e1ff;">
+                <b>ONLINE MODE:</b> This game runs live on Render using Socket.io. Both players need internet access to race in real-time!
+            </div>
+
+            <div style="display: flex; gap: 10px;">
+                <button id="got-it-btn" style="background: #FFE600; color: #000; border: none; padding: 12px 20px; font-family: 'Impact', sans-serif; font-size: 16px; border-radius: 8px; cursor: pointer; flex: 1; letter-spacing: 1px;">GOT IT ✓</button>
+                <button id="help-create-btn" style="background: #33e1ff; color: #000; border: none; padding: 12px 20px; font-family: 'Impact', sans-serif; font-size: 16px; border-radius: 8px; cursor: pointer; flex: 1; letter-spacing: 1px;">CREATE ROOM NOW</button>
+            </div>
+        </div>
+    </div>
+
     <script src="/socket.io/socket.io.js"></script>
     <script src="script.js"></script>
 </body>
