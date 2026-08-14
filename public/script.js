@@ -11,6 +11,7 @@ const joinSubmitBtn = document.getElementById('join-room-btn');
 const roomCodeInput = document.getElementById('room-code-input');
 const myRoomCodeText = document.getElementById('my-room-code');
 const playerStatus = document.getElementById('player-status');
+const vsBotBtn = document.querySelector('.btn-bot'); // VS Bot Button target kiya
 
 const typingInput = document.getElementById('typing-input');
 const textToType = document.getElementById('text-to-type').innerText;
@@ -24,6 +25,8 @@ let isPlayer1 = false;
 let startTime = null;
 let matchOver = false;
 let myFinalWpm = 0;
+let isVsBot = false;
+let botInterval = null;
 
 // ==========================================
 // 🚀 1. LOBBY & ROOM LOGIC
@@ -63,7 +66,8 @@ socket.on('roomError', (msg) => {
 
 socket.on('gameStarted', (roomCode) => {
     currentRoom = roomCode;
-    matchOver = false; // Fresh start
+    matchOver = false; 
+    isVsBot = false;
     
     roomMenu.style.display = 'none';
     gameArea.style.display = 'block';
@@ -84,11 +88,64 @@ socket.on('gameStarted', (roomCode) => {
 });
 
 // ==========================================
-// 🏎️ 2. GAMEPLAY & PROGRESS LOGIC
+// 🤖 2. VS BOT MODE LOGIC
+// ==========================================
+
+vsBotBtn.addEventListener('click', () => {
+    isVsBot = true;
+    matchOver = false;
+    
+    roomMenu.style.display = 'none';
+    gameArea.style.display = 'block';
+    
+    playerStatus.innerText = "VS BOT MODE - RACE STARTED! 🔥";
+    playerStatus.style.background = "transparent";
+    playerStatus.style.color = "#D32F2F"; 
+    playerStatus.style.fontFamily = "'Segoe UI', Tahoma, sans-serif";
+    playerStatus.style.fontWeight = "700";
+    playerStatus.style.fontSize = "22px";
+    
+    typingInput.disabled = false;
+    typingInput.value = '';
+    typingInput.focus();
+    startTime = new Date().getTime();
+
+    let botProgress = 0;
+    let botWpm = Math.floor(Math.random() * (75 - 45 + 1)) + 45; // 45 to 75 WPM random speed
+
+    botInterval = setInterval(() => {
+        if (matchOver) {
+            clearInterval(botInterval);
+            return;
+        }
+
+        botProgress += 1.5; 
+        if (botProgress > 100) botProgress = 100;
+
+        car2.style.left = botProgress + '%';
+        wpm2.innerText = `[${botWpm} WPM]`;
+
+        if (botProgress >= 100) {
+            matchOver = true;
+            clearInterval(botInterval);
+            typingInput.disabled = true;
+
+            document.getElementById('win-modal').style.display = 'flex';
+            document.getElementById('win-title').innerText = "YOU LOSE! (BOT WON)";
+            document.getElementById('win-title').style.color = "#D32F2F";
+            
+            document.getElementById('final-my-wpm').innerText = myFinalWpm;
+            document.getElementById('final-opp-wpm').innerText = botWpm;
+        }
+    }, 300);
+});
+
+// ==========================================
+// 🏎️ 3. GAMEPLAY & PROGRESS LOGIC
 // ==========================================
 
 typingInput.addEventListener('input', () => {
-    if (matchOver) return; // Agar match khatam ho gaya toh kuch mat karo
+    if (matchOver) return; 
     
     const typedText = typingInput.value;
     const cleanTyped = typedText.trim();
@@ -103,7 +160,10 @@ typingInput.addEventListener('input', () => {
         const wordsTyped = typedText.length / 5;
         myFinalWpm = Math.round(wordsTyped / timeElapsed) || 0;
 
-        if (isPlayer1) {
+        if (isVsBot) {
+            car1.style.left = progress + '%';
+            wpm1.innerText = `[${myFinalWpm} WPM]`;
+        } else if (isPlayer1) {
             car1.style.left = progress + '%';
             wpm1.innerText = `[${myFinalWpm} WPM]`;
         } else {
@@ -111,27 +171,30 @@ typingInput.addEventListener('input', () => {
             wpm2.innerText = `[${myFinalWpm} WPM]`;
         }
 
-        socket.emit('typingProgress', { 
-            roomCode: currentRoom, 
-            progress: progress, 
-            wpm: myFinalWpm, 
-            isPlayer1: isPlayer1 
-        });
+        if (!isVsBot) {
+            socket.emit('typingProgress', { 
+                roomCode: currentRoom, 
+                progress: progress, 
+                wpm: myFinalWpm, 
+                isPlayer1: isPlayer1 
+            });
+        }
 
         // 🏆 WIN CONDITION (Aap jeet gaye)
         if (cleanTyped === cleanTarget || progress >= 99) {
             matchOver = true;
             typingInput.disabled = true;
+            if (isVsBot && botInterval) clearInterval(botInterval);
             
-            // Show Win Popup
             document.getElementById('win-modal').style.display = 'flex';
             document.getElementById('win-title').innerText = "YOU WIN!";
             document.getElementById('win-title').style.color = "#000";
             document.getElementById('final-my-wpm').innerText = myFinalWpm;
-            document.getElementById('final-opp-wpm').innerText = "0"; 
+            document.getElementById('final-opp-wpm').innerText = isVsBot ? (botWpm > 0 ? "50" : "0") : "0"; 
             
-            // Server ko batao ki aap jeet gaye ho taaki wo opponent ko rokk sake
-            socket.emit('playerWon', { roomCode: currentRoom, wpm: myFinalWpm });
+            if (!isVsBot) {
+                socket.emit('playerWon', { roomCode: currentRoom, wpm: myFinalWpm });
+            }
         }
 
     } else {
@@ -141,7 +204,7 @@ typingInput.addEventListener('input', () => {
 });
 
 socket.on('updateOpponent', (data) => {
-    if (matchOver) return;
+    if (matchOver || isVsBot) return;
     if (isPlayer1 && !data.isPlayer1) {
         car2.style.left = data.progress + '%';
         wpm2.innerText = `[${data.wpm} WPM]`;
@@ -152,13 +215,11 @@ socket.on('updateOpponent', (data) => {
     }
 });
 
-// 🏁 LUZER / GAME OVER CONDITION (Jab opponent pehle jeet jaye)
 socket.on('gameOver', (data) => {
-    if (matchOver) return;
+    if (matchOver || isVsBot) return;
     matchOver = true;
     typingInput.disabled = true;
 
-    // Show Lose Popup
     document.getElementById('win-modal').style.display = 'flex';
     document.getElementById('win-title').innerText = "YOU LOSE!";
     document.getElementById('win-title').style.color = "#D32F2F";
@@ -168,29 +229,30 @@ socket.on('gameOver', (data) => {
 });
 
 // ==========================================
-// 🔄 3. PLAY AGAIN LOGIC
+// 🔄 4. PLAY AGAIN LOGIC
 // ==========================================
 
 function restartGame() {
-    socket.emit('playAgain', currentRoom);
+    if (isVsBot) {
+        document.getElementById('win-modal').style.display = 'none';
+        vsBotBtn.click(); // Restart bot match
+    } else {
+        socket.emit('playAgain', currentRoom);
+    }
 }
 
-// Server se jab restart signal milega
 socket.on('restartGame', () => {
-    // Popup chupao
+    if (isVsBot) return;
     document.getElementById('win-modal').style.display = 'none';
     
-    // Reset variables
     matchOver = false;
     startTime = new Date().getTime();
     
-    // Reset Cars & WPM
     car1.style.left = '0%';
     car2.style.left = '0%';
     wpm1.innerText = '[0 WPM]';
     wpm2.innerText = '[0 WPM]';
     
-    // Clear and enable input
     typingInput.value = '';
     typingInput.disabled = false;
     typingInput.style.borderColor = '#000';
