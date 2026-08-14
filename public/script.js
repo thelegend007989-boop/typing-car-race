@@ -11,15 +11,44 @@ const joinSubmitBtn = document.getElementById('join-room-btn');
 const roomCodeInput = document.getElementById('room-code-input');
 const myRoomCodeText = document.getElementById('my-room-code');
 const playerStatus = document.getElementById('player-status');
-const vsBotBtn = document.querySelector('.btn-bot'); // VS Bot Button target kiya
+const vsBotBtn = document.querySelector('.btn-bot');
 
 const typingInput = document.getElementById('typing-input');
-const textToType = document.getElementById('text-to-type').innerText;
 const car1 = document.getElementById('car1');
 const car2 = document.getElementById('car2');
 const wpm1 = document.getElementById('wpm1');
 const wpm2 = document.getElementById('wpm2');
 
+// 📝 MOTIVATION & SUCCESS SENTENCES LIST (25+ Sentences)
+const sentencesList = [
+    "Push yourself because no one else is going to do it for you.",
+    "Success doesn't just find you, you have to go out and get it.",
+    "Dream bigger, do bigger, and never settle for anything less than your best.",
+    "Hard work beats talent when talent doesn't work hard every single day.",
+    "The secret of getting ahead is getting started right now without fear.",
+    "Don't watch the clock; do what it does, keep going forward endlessly.",
+    "Great things never come from staying inside your comfort zone.",
+    "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+    "Believe in yourself and all that you are capable of achieving.",
+    "Your limitation—it's only your imagination holding you back from greatness.",
+    "Ganpat University is the best place to learn computer engineering and build awesome projects.",
+    "Web development is an amazing skill that allows you to create applications for the whole world.",
+    "JavaScript powers the interactive parts of the web and makes modern websites come alive.",
+    "Practice typing every day to increase your speed and become a professional programmer.",
+    "Coding is not just about writing syntax, it is about solving complex real-world problems.",
+    "Artificial intelligence and machine learning are shaping the future of modern technology.",
+    "Building multiplayer games using socket io is a fantastic way to understand networking.",
+    "Always write clean, readable code so that other developers can understand it easily.",
+    "Success in programming comes from consistent practice and never giving up on errors.",
+    "Full stack developers master both frontend interfaces and backend server logic seamlessly.",
+    "Debugging is like being a detective in a crime movie where you are also the murderer.",
+    "Technology is best when it brings people together and solves meaningful daily challenges.",
+    "Cloud computing allows developers to deploy applications globally with high availability.",
+    "A clean workspace and a focused mind are the true secret weapons of a great coder.",
+    "Consistency beats talent when talent doesn't work hard enough on building projects."
+];
+
+let textToType = "";
 let currentRoom = '';
 let isPlayer1 = false; 
 let startTime = null;
@@ -27,6 +56,12 @@ let matchOver = false;
 let myFinalWpm = 0;
 let isVsBot = false;
 let botInterval = null;
+
+// Helper function to pick a random sentence
+function setNewSentence() {
+    textToType = sentencesList[Math.floor(Math.random() * sentencesList.length)];
+    document.getElementById('text-to-type').innerText = textToType;
+}
 
 // ==========================================
 // 🚀 1. LOBBY & ROOM LOGIC
@@ -72,6 +107,8 @@ socket.on('gameStarted', (roomCode) => {
     roomMenu.style.display = 'none';
     gameArea.style.display = 'block';
     
+    setNewSentence(); // Naya sentence set hoga
+
     playerStatus.innerText = "RACE STARTED! GO GO GO! 🔥";
     playerStatus.style.background = "transparent";
     playerStatus.style.color = "#D32F2F"; 
@@ -98,6 +135,8 @@ vsBotBtn.addEventListener('click', () => {
     roomMenu.style.display = 'none';
     gameArea.style.display = 'block';
     
+    setNewSentence(); // Naya sentence set hoga
+
     playerStatus.innerText = "VS BOT MODE - RACE STARTED! 🔥";
     playerStatus.style.background = "transparent";
     playerStatus.style.color = "#D32F2F"; 
@@ -111,7 +150,7 @@ vsBotBtn.addEventListener('click', () => {
     startTime = new Date().getTime();
 
     let botProgress = 0;
-    let botWpm = Math.floor(Math.random() * (75 - 45 + 1)) + 45; // 45 to 75 WPM random speed
+    let botWpm = Math.floor(Math.random() * (75 - 45 + 1)) + 45;
 
     botInterval = setInterval(() => {
         if (matchOver) {
@@ -180,7 +219,7 @@ typingInput.addEventListener('input', () => {
             });
         }
 
-        // 🏆 WIN CONDITION (Aap jeet gaye)
+        // 🏆 WIN CONDITION
         if (cleanTyped === cleanTarget || progress >= 99) {
             matchOver = true;
             typingInput.disabled = true;
@@ -235,7 +274,7 @@ socket.on('gameOver', (data) => {
 function restartGame() {
     if (isVsBot) {
         document.getElementById('win-modal').style.display = 'none';
-        vsBotBtn.click(); // Restart bot match
+        vsBotBtn.click();
     } else {
         socket.emit('playAgain', currentRoom);
     }
@@ -248,6 +287,8 @@ socket.on('restartGame', () => {
     matchOver = false;
     startTime = new Date().getTime();
     
+    setNewSentence(); // Restart par bhi naya sentence aayega
+
     car1.style.left = '0%';
     car2.style.left = '0%';
     wpm1.innerText = '[0 WPM]';
