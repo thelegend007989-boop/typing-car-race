@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Multiplayer Typing Car Race</title>
+    <link rel="stylesheet" href="style.css">
+    <style>
+        /* 🎨 EXACT MATCH REACT CLONE - NO SHADOWS, NO STROKES */
+        body { 
+            background-color: #FFE600; 
+            font-family: 'Segoe UI', Tahoma, sans-serif; 
+            margin: 0; 
+            padding: 0; 
+            overflow-x: hidden;
+        }
+
+        .checkered-header {
+            width: 100%; height: 40px;
+            background-image: repeating-linear-gradient(45deg, #000 0, #000 20px, #fff 20px, #fff 40px);
+            position: relative;
+        }
+        .header-curve {
+            position: absolute; bottom: -20px; left: -10%; width: 120%; height: 40px; background-color: #FFE600; border-top-left-radius: 50%; border-top-right-radius: 50%;
+        }
+
+        .title-container { text-align: center; margin-top: 30px; }
+        .title-container h1 { font-family: 'Impact', sans-serif; font-size: 48px; color: #000; margin: 0; letter-spacing: 1px; text-shadow: none !important; -webkit-text-stroke: 0px transparent !important; }
+        .subtitle { display: flex; align-items: center; justify-content: center; gap: 15px; margin-top: 5px; }
+        .subtitle span.line { height: 2px; width: 60px; background-color: #000; }
+        .subtitle span.text { font-size: 11px; font-weight: 900; letter-spacing: 2px; color: #000; }
+
+        .main-card {
+            background-color: #0a0a0a; border-radius: 15px; max-width: 600px; margin: 40px auto; padding: 40px; text-align: center; box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        #mode-selection h2 { color: #FFE600; font-family: 'Impact', sans-serif; font-size: 24px; letter-spacing: 1px; margin: 0; text-shadow: none !important; -webkit-text-stroke: 0px transparent !important; }
+        #mode-selection p.desc { color: #888; font-size: 13px; font-weight: 700; margin-top: 8px; margin-bottom: 30px; }
+
+        .buttons-grid { display: flex; gap: 15px; justify-content: center; }
+        .btn-card { flex: 1; padding: 30px 10px; border-radius: 12px; border: none; cursor: pointer; color: #000; transition: opacity 0.2s; }
+        .btn-card:hover { opacity: 0.9; }
+        .btn-bot { background-color: #FFE600; } .btn-create { background-color: #FFFFFF; } .btn-join { background-color: #33e1ff; }
+        .btn-card .icon { font-size: 24px; margin-bottom: 10px; }
+        .btn-card h3 { font-family: 'Impact', sans-serif; font-size: 20px; margin: 0 0 5px 0; letter-spacing: 1px; text-shadow: none !important; -webkit-text-stroke: 0px transparent !important; }
+        .btn-card span.sub-text { font-size: 11px; font-weight: 800; opacity: 0.8; }
+
+        .tags-container { margin-top: 30px; display: flex; justify-content: center; gap: 15px; }
+        .tag { padding: 6px 15px; border-radius: 20px; font-size: 11px; font-weight: bold; background: rgba(255,255,255,0.05); }
+        .tag-blue { border: 1px solid #33e1ff; color: #fff; } .tag-blue::before { content: '🌐'; margin-right: 5px; }
+        .tag-green { border: 1px solid #2ecc71; color: #2ecc71; } .tag-green::before { content: '🟢'; margin-right: 5px; }
+
+        #join-input-section { display: none; margin-top: 25px; background: #1a1a1a; padding: 20px; border-radius: 12px; gap: 10px; justify-content: center; }
+        #join-input-section input { flex: 1; padding: 15px; font-size: 16px; text-align: center; border: none; border-radius: 8px; background: #000; color: #33e1ff; font-weight: bold; outline: 1px solid #33e1ff; text-transform: uppercase; }
+        #join-input-section button { padding: 15px 30px; font-size: 16px; cursor: pointer; background: #33e1ff; color: #000; font-family: 'Impact', sans-serif; border: none; border-radius: 8px; letter-spacing: 1px; }
+
+        #room-display { display: none; }
+        .nav-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px; }
+        .nav-top .cancel { color: #888; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .nav-top .cancel:hover { color: #fff; }
+        .nav-top .host-tag { background: #222; color: #888; font-size: 10px; font-weight: 900; padding: 5px 12px; border-radius: 6px; letter-spacing: 1px; }
+
+        #room-display h2.title { color: #FFE600; font-family: 'Impact', sans-serif; font-size: 22px; letter-spacing: 1px; margin-bottom: 20px; text-shadow: none !important; -webkit-text-stroke: 0px transparent !important; }
+
+        .white-qr-box { background: white; border-radius: 15px; margin: 0 auto 25px auto; width: 220px; height: 220px; display: flex; align-items: center; justify-content: center; box-sizing: border-box; }
+        .code-pill { background: #0a0a0a; border-radius: 12px; padding: 15px 25px; width: 85%; }
+        
+        .code-pill h1 { 
+            color: #FFE600 !important; 
+            font-family: 'Impact', sans-serif !important; 
+            font-size: 35px !important; 
+            letter-spacing: 4px !important; 
+            margin: 0 !important; 
+            text-shadow: none !important; 
+            -webkit-text-stroke: 0px transparent !important; 
+        }
+
+        .action-btns { display: flex; gap: 10px; justify-content: center; margin-bottom: 30px; }
+        .action-btns button { background: #222; color: white; border: none; padding: 10px 20px; border-radius: 20px; font-size: 11px; font-weight: bold; cursor: pointer; transition: 0.2s; }
+        .action-btns button:hover { background: #333; }
+
+        .status-bar-yellow { background: #FFE600; color: #000; font-family: 'Impact', sans-serif; font-size: 14px; letter-spacing: 1px; padding: 15px; border-radius: 30px; margin: 0 auto 10px auto; width: 100%; box-sizing: border-box; text-transform: uppercase; text-shadow: none !important; -webkit-text-stroke: 0px transparent !important; }
+        .status-bar-grey { background: #222; color: #666; font-family: 'Impact', sans-serif; font-size: 14px; letter-spacing: 1px; padding: 15px; border-radius: 30px; margin: 0 auto; width: 100%; box-sizing: border-box; text-transform: uppercase; text-shadow: none !important; -webkit-text-stroke: 0px transparent !important; }
+        
+        .bottom-inst { color: #666; font-size: 11px; margin-top: 25px; font-weight: bold; }
+        .bottom-inst span { color: #fff; }
+    </style>
+</head>
+<body>
+    
+    <div class="checkered-header"><div class="header-curve"></div></div>
+
+    <div class="title-container">
+        <h1>🏁 TYPING CAR RACE 🏁</h1>
+        <div class="subtitle"><span class="line"></span><span class="text">V2 • PC CONNECT • SOCKET.IO</span><span class="line"></span></div>
+    </div>
+
+    <!-- MAIN UI CARD -->
+    <div id="room-menu" class="main-card">
+        
+        <div id="mode-selection">
+            <h2>CHOOSE MODE</h2>
+            <p class="desc">Create a Room on one device and join with the code on the other. Real-time typing race!</p>
+
+            <div class="buttons-grid">
+                <button class="btn-card btn-bot"><div class="icon">🤖</div><h3>VS BOT</h3><span class="sub-text">Offline</span></button>
+                <button id="create-room-btn" class="btn-card btn-create"><div class="icon">📱</div><h3>CREATE ROOM</h3><span class="sub-text">PC Connect</span></button>
+                <button class="btn-card btn-join" onclick="document.getElementById('join-input-section').style.display='flex'"><div class="icon">🔗</div><h3>JOIN ROOM</h3><span class="sub-text">Enter Code</span></button>
+            </div>
+
+            <div id="join-input-section">
+                <input type="text" id="room-code-input" placeholder="ENTER 4-DIGIT CODE">
+                <button id="join-room-btn">JOIN</button>
+            </div>
+
+            <div class="tags-container">
+                <div class="tag tag-blue">Connection Help</div>
+                <div class="tag tag-green">Socket.io Ready - Online Works</div>
+            </div>
+        </div>
+
+        <!-- WAITING LOBBY -->
+        <div id="room-display">
+            <div class="nav-top">
+                <span class="cancel" onclick="location.reload()">← Cancel</span>
+                <span class="host-tag">HOST</span>
+            </div>
+
+            <h2 class="title">ROOM CREATED!</h2>
+
+            <div class="white-qr-box">
+                <div class="code-pill">
+                    <h1 id="my-room-code">----</h1>
+                </div>
+            </div>
+
+            <div class="action-btns">
+                <button onclick="navigator.clipboard.writeText(document.getElementById('my-room-code').innerText); alert('Code Copied!');">📄 Copy Code</button>
+                <button>Connection Help</button>
+            </div>
+
+            <div class="status-bar-yellow">WAITING FOR PLAYER 2...</div>
+            <div class="status-bar-grey">WAITING FOR GUEST...</div>
+            
+            <p class="bottom-inst">Open <span>Join Room</span> on the other device and enter this code.</p>
+        </div>
+    </div>
+
+    <!-- 🛑 GAME AREA -->
+    <div id="game-area" style="display: none;">
+        <h3 id="player-status" style="text-align: center; background: #FFE600; padding: 10px 20px; border-radius: 8px; width: fit-content; margin: 0 auto 20px auto; font-family: 'Impact', sans-serif; font-size: 22px; color: #000; text-shadow: none !important; -webkit-text-stroke: 0px transparent !important;">Waiting for connection...</h3>
+        
+        <div class="track">
+            <div id="car1" class="car">
+                <img src="car1.png" alt="Player 1 Car">
+                <span class="tag" style="background: #111 !important; color: #fff !important; padding: 4px 8px !important; border-radius: 4px !important; font-family: 'Impact', sans-serif !important; font-size: 14px !important; letter-spacing: 1px !important; text-shadow: none !important; -webkit-text-stroke: 0px transparent !important;">PLAYER 1 <span id="wpm1" style="color: #00E5FF !important;">[0 WPM]</span></span>
+            </div>
+        </div>
+        <div class="track">
+            <div id="car2" class="car">
+                <img src="car2.png" alt="Player 2 Car">
+                <span class="tag" style="background: #111 !important; color: #fff !important; padding: 4px 8px !important; border-radius: 4px !important; font-family: 'Impact', sans-serif !important; font-size: 14px !important; letter-spacing: 1px !important; text-shadow: none !important; -webkit-text-stroke: 0px transparent !important;">PLAYER 2 <span id="wpm2" style="color: #00E5FF !important;">[0 WPM]</span></span>
+            </div>
+        </div>
+
+        <div class="typing-area" style="max-width: 800px; margin: 20px auto; text-align: center; font-family: 'Segoe UI', sans-serif;">
+            <p id="text-to-type" style="font-size: 22px; background: #fff; color: #000; font-weight: bold; padding: 20px; border-radius: 10px;">Ganpat University is the best place to learn computer engineering and build awesome projects.</p>
+            <textarea id="typing-input" placeholder="Start typing here..." disabled style="width: 100%; height: 100px; font-size: 20px; padding: 15px; border-radius: 10px; margin-top: 15px; background: #fff; color: #000; font-weight: bold; resize: none;"></textarea>
+        </div>
+    </div>
+
+    <!-- 🏆 WINNING POPUP MODAL -->
+    <div id="win-modal" style="display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 999; justify-content: center; align-items: center;">
+        <div style="background: #FFE600; padding: 40px; border-radius: 20px; border: 4px solid #000; text-align: center; max-width: 450px; width: 90%; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+            <div style="font-size: 50px; margin-bottom: 10px;">🏆</div>
+            <h1 id="win-title" style="font-family: 'Impact', sans-serif; font-size: 40px; color: #000; margin: 0; text-transform: uppercase;">YOU WIN!</h1>
+            <p id="win-subtitle" style="font-weight: bold; color: #333; margin: 10px 0 25px 0; font-size: 16px;">Amazing speed! Race completed.</p>
+            
+            <div style="display: flex; gap: 15px; justify-content: center; margin-bottom: 25px;">
+                <div style="background: #000; color: #fff; padding: 15px; border-radius: 12px; flex: 1;">
+                    <p style="margin: 0; font-size: 11px; color: #888; font-weight: bold;">YOUR WPM</p>
+                    <h2 id="final-my-wpm" style="margin: 5px 0 0 0; color: #FFE600; font-family: 'Impact', sans-serif; font-size: 28px;">0</h2>
+                </div>
+                <div style="background: #000; color: #fff; padding: 15px; border-radius: 12px; flex: 1;">
+                    <p style="margin: 0; font-size: 11px; color: #888; font-weight: bold;">OPPONENT WPM</p>
+                    <h2 id="final-opp-wpm" style="margin: 5px 0 0 0; color: #33e1ff; font-family: 'Impact', sans-serif; font-size: 28px;">0</h2>
+                </div>
+            </div>
+
+            <!-- 🔥 SIDE-BY-SIDE BUTTONS (Play Again calls restartGame()) -->
+            <div style="display: flex; gap: 10px; justify-content: center;">
+                <button onclick="restartGame()" style="background: #000; color: #FFE600; border: none; padding: 15px 20px; font-family: 'Impact', sans-serif; font-size: 18px; border-radius: 10px; cursor: pointer; letter-spacing: 1px; flex: 1;">PLAY AGAIN</button>
+                <button onclick="location.reload()" style="background: #fff; color: #000; border: 3px solid #000; padding: 15px 20px; font-family: 'Impact', sans-serif; font-size: 18px; border-radius: 10px; cursor: pointer; letter-spacing: 1px; flex: 1;">MAIN MENU</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>

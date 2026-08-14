@@ -1,0 +1,130 @@
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    text-align: center;
+    /* Naya Background Image Code */
+    background-image: url('bg.jpg'); 
+    background-size: cover;
+    background-position: center;
+    background-attachment: fixed;
+    color: #66fcf1;
+    margin: 0;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 4em;
+    font-family: 'Impact', sans-serif;
+    font-style: italic;
+    text-transform: uppercase;
+    color: #1a1a1a; /* Ekdum dark grey/black */
+    -webkit-text-stroke: 1px #ffffff;
+    /* Red aur White ka double layer offset */
+    text-shadow: -3px -3px 0px #ffffff, 4px 4px 0px #ff0000; 
+    margin-bottom: 5px;
+    letter-spacing: 3px;
+}
+
+#player-status {
+    color: #1f2833; /* Dark text */
+    font-weight: bold;
+    margin-bottom: 30px;
+    background: rgba(255, 255, 255, 0.7); /* Thoda safed background padhne me aasani ke liye */
+    display: inline-block;
+    padding: 5px 15px;
+    border-radius: 5px;
+}
+
+.track {
+    width: 85%;
+    height: 70px;
+    background-color: rgba(31, 40, 51, 0.85);
+    /* Yahan neeche (bottom) ka margin badha kar 50px kar diya hai taaki gap mil jaye */
+    margin: 25px auto 50px auto; 
+    border-radius: 8px;
+    position: relative;
+    border: 2px solid #45a29e;
+    box-shadow: 0 0 15px #45a29e;
+}
+
+/* Ye naya chhota sa code Player 1 ke track ko priority dega taaki uska tag kabhi na chupe */
+.track:first-of-type {
+    z-index: 10;
+}
+
+.track::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    left: 0;
+    width: 100%;
+    border-top: 3px dashed #c5c6c7;
+    z-index: 0;
+}
+
+.car {
+    position: absolute;
+    left: 0;
+    top: -15px;
+    
+    /* Ye ek line car ki movement ko ekdum makhan (smooth) bana degi */
+    transition: left 0.3s linear; 
+    
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+/* Ye code car ka size theek karega aur usko track ke hisaab se seedha ghumayega */
+.car img {
+    width: 120px; 
+    transform: scaleX(-1); 
+    filter: drop-shadow(0px 10px 15px rgba(0, 0, 0, 0.8));
+}
+
+.tag {
+    font-size: 14px;
+    margin-top: 15px; /* Isko kam kar diya taaki tag thoda upar khisak jaye */
+    color: #ffffff;
+    font-weight: bold;
+    background: rgba(0, 0, 0, 0.8);
+    padding: 2px 6px;
+    border-radius: 4px;
+    border: 1px solid #66fcf1;
+    z-index: 11;
+}
+
+.typing-area {
+    margin-top: 50px;
+}
+
+#text-to-type {
+    font-size: 22px;
+    margin: 0 auto 20px auto;
+    background: rgba(31, 40, 51, 0.85); /* 0.85 transparency hai */
+    color: #ffffff;
+    padding: 20px;
+    border-radius: 10px;
+    width: 75%;
+    box-shadow: inset 0 0 10px #000000;
+    border: 1px solid #45a29e;
+    line-height: 1.5;
+}
+
+#typing-input {
+    width: 60%;
+    height: 60px;
+    font-size: 20px;
+    padding: 15px;
+    border-radius: 8px;
+    border: 2px solid #66fcf1;
+    background-color: #0b0c10;
+    color: #ffffff;
+    box-shadow: 0 0 10px #66fcf1;
+    outline: none;
+    transition: 0.3s;
+}
+
+#typing-input:focus {
+    box-shadow: 0 0 25px #66fcf1;
+}
