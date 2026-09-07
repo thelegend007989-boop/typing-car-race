@@ -145,8 +145,11 @@
         </div>
     </div>
 
-    <!-- 🛑 GAME AREA -->
-    <div id="game-area" style="display: none;">
+    <!-- 🛑 GAME AREA (WITH NEW EXIT BUTTON) -->
+    <div id="game-area" style="display: none; position: relative;">
+        <!-- Naya Exit Button -->
+        <button id="exit-game-btn" style="position: absolute; top: 0; left: 20px; background: #222; color: #fff; border: 1px solid #D32F2F; padding: 10px 15px; border-radius: 8px; font-family: 'Impact', sans-serif; cursor: pointer; letter-spacing: 1px;">← EXIT</button>
+        
         <h3 id="player-status" style="text-align: center; background: #FFE600; padding: 10px 20px; border-radius: 8px; width: fit-content; margin: 0 auto 20px auto; font-family: 'Impact', sans-serif; font-size: 22px; color: #000; text-shadow: none !important; -webkit-text-stroke: 0px transparent !important;">Waiting for connection...</h3>
         
         <div class="track">
@@ -186,7 +189,7 @@
                 </div>
             </div>
 
-            <!-- 🔥 SIDE-BY-SIDE BUTTONS (Play Again calls restartGame()) -->
+            <!-- 🔥 SIDE-BY-SIDE BUTTONS -->
             <div style="display: flex; gap: 10px; justify-content: center;">
                 <button onclick="restartGame()" style="background: #000; color: #FFE600; border: none; padding: 15px 20px; font-family: 'Impact', sans-serif; font-size: 18px; border-radius: 10px; cursor: pointer; letter-spacing: 1px; flex: 1;">PLAY AGAIN</button>
                 <button onclick="location.reload()" style="background: #fff; color: #000; border: 3px solid #000; padding: 15px 20px; font-family: 'Impact', sans-serif; font-size: 18px; border-radius: 10px; cursor: pointer; letter-spacing: 1px; flex: 1;">MAIN MENU</button>
