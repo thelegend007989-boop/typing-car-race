@@ -12,7 +12,7 @@ const roomCodeInput = document.getElementById('room-code-input');
 const myRoomCodeText = document.getElementById('my-room-code');
 const playerStatus = document.getElementById('player-status');
 const vsBotBtn = document.querySelector('.btn-bot');
-const exitGameBtn = document.getElementById('exit-game-btn'); // Naya Exit Button
+const exitGameBtn = document.getElementById('exit-game-btn'); 
 
 const typingInput = document.getElementById('typing-input');
 const car1 = document.getElementById('car1');
@@ -33,7 +33,12 @@ const sentencesList = [
     "Success doesn't just find you, you have to go out and get it.",
     "Dream bigger, do bigger, and never settle for anything less than your best.",
     "Hard work beats talent when talent doesn't work hard every single day.",
-    "The secret of getting ahead is getting started right now without fear."
+    "The secret of getting ahead is getting started right now without fear.",
+    "Don't watch the clock; do what it does, keep going forward endlessly.",
+    "Great things never come from staying inside your comfort zone.",
+    "Success is not final, failure is not fatal: it is the courage to continue that counts.",
+    "Believe in yourself and all that you are capable of achieving.",
+    "Your limitation—it's only your imagination holding you back from greatness."
 ];
 
 let textToType = "";
@@ -50,7 +55,7 @@ let botInterval = null;
 // ==========================================
 exitGameBtn.addEventListener('click', () => {
     if (confirm("Are you sure you want to exit the game?")) {
-        location.reload(); // Reloads page and returns to main menu
+        location.reload(); 
     }
 });
 
@@ -93,10 +98,9 @@ roomCodeInput.addEventListener('keypress', (e) => {
 
 socket.on('roomError', (msg) => alert(msg));
 
-// 🔥 SERVER SE AAYA SYNCED TEXT GET KARNA (Data me sentence bhi hai)
 socket.on('gameStarted', (data) => {
     currentRoom = data.roomCode;
-    textToType = data.sentence; // Server wala same sentence!
+    textToType = data.sentence; 
     document.getElementById('text-to-type').innerHTML = textToType;
 
     matchOver = false; 
@@ -167,17 +171,24 @@ typingInput.addEventListener('input', () => {
     
     const typedText = typingInput.value;
     
-    // 🎨 Live Blue Highlight Logic! 
+    // 🎨 Live Blue Highlight Fix
     let matchCount = 0;
     for (let i = 0; i < typedText.length; i++) {
-        if (typedText[i] === textToType[i]) matchCount++;
-        else break; // Rukk jao jaha pehli galti ho
+        if (typedText[i] === textToType[i]) {
+            matchCount++;
+        } else {
+            break;
+        }
     }
     
     const matchedStr = textToType.substring(0, matchCount);
     const remainStr = textToType.substring(matchCount);
-    // Background blue set ho jayega typed text par
-    document.getElementById('text-to-type').innerHTML = `<span style="background: #33e1ff; color: #000; border-radius: 3px;">${matchedStr}</span>${remainStr}`;
+    
+    if (matchCount > 0) {
+        document.getElementById('text-to-type').innerHTML = `<span style="background: #33e1ff; color: #000; border-radius: 3px;">${matchedStr}</span>${remainStr}`;
+    } else {
+        document.getElementById('text-to-type').innerHTML = textToType;
+    }
 
     const cleanTyped = typedText.trim();
     const cleanTarget = textToType.trim();
@@ -257,7 +268,6 @@ function restartGame() {
     }
 }
 
-// Server restart par naya synced sentence bhejega
 socket.on('restartGame', (data) => {
     if (isVsBot) return;
     document.getElementById('win-modal').style.display = 'none';
